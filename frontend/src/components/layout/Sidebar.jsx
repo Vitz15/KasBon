@@ -41,7 +41,7 @@ export default function Sidebar() {
             className="flex items-center gap-2.5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
           >
             <img src="/logo.png" alt="KasBon Logo" className="w-7 h-7 object-contain flex-shrink-0" />
-            <span className="text-[13.5px] font-semibold text-white tracking-tight">KasBon Warung</span>
+            <span className="text-[13.5px] font-semibold text-white tracking-tight">KasBon Digital</span>
           </Link>
         </div>
 
