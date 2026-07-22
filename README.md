@@ -3,6 +3,7 @@
 Aplikasi manajemen Buku KasBon (Buku Hutang Pelanggan) dan Inventaris Stok Barang untuk warung kelontong (UMKM). Aplikasi ini terintegrasi penuh antara modul Kasir (POS), Manajemen Stok (Inventaris), Manajemen Pelanggan (Buku KasBon), dan Laporan Keuangan (Owner Only).
 
 ## 🚀 Fitur Utama
+
 1. **Dashboard Analytics**: Ringkasan finansial (total kasbon aktif, omzet harian, sisa stok) dan chart tren pendapatan.
 2. **Mesin Kasir (POS)**: Memproses transaksi tunai & kasbon secara instan dengan pencarian produk real-time, otomatis mengurangi stok barang, dan bisa menambahkan pelanggan KasBon baru langsung saat transaksi tanpa keluar dari layar kasir.
 3. **Buku KasBon**: Daftar tagihan per pelanggan, pencatatan pembayaran cicilan/lunas, dan status telat jatuh tempo.
@@ -13,27 +14,24 @@ Aplikasi manajemen Buku KasBon (Buku Hutang Pelanggan) dan Inventaris Stok Baran
 
 ---
 
-## 📸 Screenshots
-
-> _Tambahkan screenshot aplikasi di sini (Dashboard, POS, Buku KasBon, dsb.) untuk memperlihatkan tampilan langsung ke pengunjung repo._
-
----
-
 ## 🛠️ Tech Stack
 
 ### Backend
+
 - **Laravel 11 / PHP 8.3**
 - **MySQL 8.0** (Database Utama)
 - **Laravel Sanctum** (Autentikasi Token)
 - **Repository Pattern + Service Layer** (Desain Arsitektur)
 
 ### Frontend
+
 - **Next.js 14 (App Router)**
 - **Tailwind CSS** (Styling Modern)
 - **Zustand** (State Management)
 - **Recharts** (Visualisasi Grafik)
 
 ### DevOps & Deploy
+
 - **Docker + Docker Compose**
 - **Nginx** (Reverse Proxy & Routing)
 - **GitHub Actions** (CI/CD Pipeline)
@@ -45,22 +43,26 @@ Aplikasi manajemen Buku KasBon (Buku Hutang Pelanggan) dan Inventaris Stok Baran
 Pastikan Anda telah memasang **Docker** dan **Docker Compose** di komputer Anda.
 
 1. **Clone repositori dan masuk ke direktori**:
+
    ```bash
    cd KasBon
    ```
 
 2. **Salin file konfigurasi environment**:
+
    ```bash
    cp backend/.env.example backend/.env
    cp frontend/.env.example frontend/.env
    ```
 
 3. **Jalankan aplikasi dengan Docker Compose**:
+
    ```bash
    docker compose up -d --build
    ```
 
 4. **Jalankan migrasi database & seed data awal**:
+
    ```bash
    docker compose exec app php artisan migrate --seed
    ```
@@ -74,6 +76,7 @@ Pastikan Anda telah memasang **Docker** dan **Docker Compose** di komputer Anda.
 ## 💻 Cara Menjalankan Secara Manual (Development Lokal)
 
 ### Langkah 1: Backend (Laravel)
+
 1. Masuk ke folder backend:
    ```bash
    cd backend
@@ -94,6 +97,7 @@ Pastikan Anda telah memasang **Docker** dan **Docker Compose** di komputer Anda.
    ```
 
 ### Langkah 2: Frontend (Next.js)
+
 1. Masuk ke folder frontend:
    ```bash
    cd ../frontend
@@ -118,12 +122,12 @@ Pastikan Anda telah memasang **Docker** dan **Docker Compose** di komputer Anda.
 
 Gunakan akun uji coba bawaan seeder untuk masuk ke dashboard:
 
-* **Akun Owner (Pemilik Toko)**:
+- **Akun Owner (Pemilik Toko)**:
   - **Email**: `owner@warung.com`
   - **Password**: `password`
-  - *Memiliki akses ke semua fitur termasuk Laporan Keuangan dan Ekspor data.*
+  - _Memiliki akses ke semua fitur termasuk Laporan Keuangan dan Ekspor data._
 
-* **Akun Kasir**:
+- **Akun Kasir**:
   - **Email**: `kasir@warung.com`
   - **Password**: `password`
-  - *Memiliki akses terbatas untuk POS kasir, inventaris, dan input cicilan kasbon.*
+  - _Memiliki akses terbatas untuk POS kasir, inventaris, dan input cicilan kasbon._
