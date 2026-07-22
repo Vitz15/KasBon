@@ -4,18 +4,25 @@ Aplikasi manajemen Buku KasBon (Buku Hutang Pelanggan) dan Inventaris Stok Baran
 
 ## 🚀 Fitur Utama
 1. **Dashboard Analytics**: Ringkasan finansial (total kasbon aktif, omzet harian, sisa stok) dan chart tren pendapatan.
-2. **Mesin Kasir (POS)**: Memproses transaksi tunai & kasbon secara instan, otomatis mengurangi stok barang.
+2. **Mesin Kasir (POS)**: Memproses transaksi tunai & kasbon secara instan dengan pencarian produk real-time, otomatis mengurangi stok barang, dan bisa menambahkan pelanggan KasBon baru langsung saat transaksi tanpa keluar dari layar kasir.
 3. **Buku KasBon**: Daftar tagihan per pelanggan, pencatatan pembayaran cicilan/lunas, dan status telat jatuh tempo.
 4. **WhatsApp Reminder**: Integrasi pengiriman pesan pengingat tagihan otomatis ke nomor WhatsApp pelanggan dengan satu klik.
 5. **Inventaris**: Manajemen katalog produk, restock manual, warning stok menipis, dan analisis keuntungan.
 6. **Laporan & Ekspor**: Grafik terlaris dan ekspor data pembukuan ke CSV/PDF (Owner Only).
+7. **Pencarian & Pagination**: Pencarian real-time di seluruh tabel data (produk, pelanggan, kasbon) dengan navigasi halaman otomatis untuk data yang banyak.
+
+---
+
+## 📸 Screenshots
+
+> _Tambahkan screenshot aplikasi di sini (Dashboard, POS, Buku KasBon, dsb.) untuk memperlihatkan tampilan langsung ke pengunjung repo._
 
 ---
 
 ## 🛠️ Tech Stack
 
 ### Backend
-- **Laravel 12 / PHP 8.3**
+- **Laravel 11 / PHP 8.3**
 - **MySQL 8.0** (Database Utama)
 - **Laravel Sanctum** (Autentikasi Token)
 - **Repository Pattern + Service Layer** (Desain Arsitektur)
