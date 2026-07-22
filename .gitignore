@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Environment files (never commit real secrets)
+.env
+.env.local
+.env.*.local
+.env.backup
+.env.production
+!.env.example
+
+# Local dev toolchain (downloaded by setup-php.ps1)
+.php/
+
+# Agent / editor session data
+.claude/
+.vscode/
+.idea/
+.cursor/
+.zed/
+.nova/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+build-log.txt

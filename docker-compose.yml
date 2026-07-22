@@ -1,0 +1,178 @@
+﻿version: '3.8'
+
+services:
+  # ===========================================
+  # Laravel Backend (PHP-FPM)
+  # ===========================================
+  app:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: kasbon-app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./backend:/var/www/html
+      - ./backend/storage:/var/www/html/storage
+      - ./backend/bootstrap/cache:/var/www/html/bootstrap/cache
+    environment:
+      - APP_ENV=${APP_ENV:-production}
+      - APP_KEY=${APP_KEY}
+      - APP_DEBUG=${APP_DEBUG:-false}
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=${DB_DATABASE:-kasbon_db}
+      - DB_USERNAME=${DB_USERNAME:-kasbon_user}
+      - DB_PASSWORD=${DB_PASSWORD:-kasbon_secret}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-redis_secret}
+      - CACHE_DRIVER=redis
+      - SESSION_DRIVER=redis
+      - QUEUE_CONNECTION=redis
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - kasbon-network
+    healthcheck:
+      test: ["CMD-SHELL", "php-fpm-healthcheck || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # ===========================================
+  # MySQL 8.0 Database
+  # ===========================================
+  mysql:
+    image: mysql:8.0
+    container_name: kasbon-mysql
+    restart: unless-stopped
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root_secret}
+      MYSQL_DATABASE: ${DB_DATABASE:-kasbon_db}
+      MYSQL_USER: ${DB_USERNAME:-kasbon_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-kasbon_secret}
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+      - kasbon-network
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --innodb-buffer-pool-size=256M
+      --max-connections=200
+      --slow-query-log=1
+      --long-query-time=2
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  # ===========================================
+  # Nginx Reverse Proxy
+  # ===========================================
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: kasbon-nginx
+    restart: unless-stopped
+    ports:
+      - "${NGINX_PORT:-80}:80"
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./backend/public:/var/www/html/public:ro
+      - nginx-logs:/var/log/nginx
+    depends_on:
+      - app
+      - frontend
+    networks:
+      - kasbon-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ===========================================
+  # Redis Cache & Session Store
+  # ===========================================
+  redis:
+    image: redis:7-alpine
+    container_name: kasbon-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - kasbon-network
+    command: >
+      redis-server
+      --appendonly yes
+      --maxmemory 128mb
+      --maxmemory-policy allkeys-lru
+      --requirepass ${REDIS_PASSWORD:-redis_secret}
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-redis_secret}", "ping"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  # ===========================================
+  # Next.js Frontend
+  # ===========================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost/api}
+    container_name: kasbon-frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost/api}
+      - NEXT_PUBLIC_APP_NAME=KasBon Digital
+    depends_on:
+      - app
+    networks:
+      - kasbon-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+# ===========================================
+# Networks
+# ===========================================
+networks:
+  kasbon-network:
+    driver: bridge
+    name: kasbon-network
+
+# ===========================================
+# Volumes
+# ===========================================
+volumes:
+  mysql-data:
+    driver: local
+    name: kasbon-mysql-data
+  redis-data:
+    driver: local
+    name: kasbon-redis-data
+  nginx-logs:
+    driver: local
+    name: kasbon-nginx-logs
